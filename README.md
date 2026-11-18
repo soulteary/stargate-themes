@@ -20,13 +20,15 @@ Reduced-motion preferences disable the background and entry animations.
 
 ## Install
 
-This theme requires [native theme support](https://github.com/soulteary/stargate/pull/387).
-CI uses Stargate commit `c2f938e0a6139ccc37105df0712b55f26e90f7de`.
+This theme requires [Stargate v1.8.0 or later](https://github.com/soulteary/stargate/releases/tag/v1.8.0).
+CI pins the Stargate source revision in [the workflow](.github/workflows/check.yml).
 It does not work with builds that only support external template overrides.
 Both the manifest and UI contract are version `1`.
 
-Copy `themes/deep-space` onto the server, or extract a packaged archive into a
-directory. Set the path to that directory:
+Download `deep-space-1.0.0.zip` and `index.json` from the
+[v1.0.0 release](https://github.com/soulteary/stargate-themes/releases/tag/v1.0.0).
+Check the archive SHA-256 against the index, then extract it into a directory.
+You can also copy `themes/deep-space` from a checkout. Set the directory path:
 
 ```sh
 THEME_DIR=/path/to/deep-space /path/to/stargate
@@ -59,7 +61,7 @@ since each process serves only its current resource digest.
 
 ## Validate and package
 
-Use a checkout of Stargate containing native theme support:
+Use a checkout of Stargate v1.8.0 or later:
 
 ```sh
 go -C ../stargate run ./src/cmd/themecheck "$PWD/themes/deep-space"
