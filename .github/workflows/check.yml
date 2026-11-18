@@ -1,0 +1,67 @@
+name: Theme checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check out the theme consumer
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: soulteary/stargate
+          ref: 5d401bb3c37a207ede9aa8eb2fc09a67acbcc6bd
+          path: stargate
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: stargate/go.mod
+          cache-dependency-path: stargate/go.sum
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: '3.12'
+      - name: Validate and check reproducible packages
+        run: |
+          python3 tools/package.py --stargate stargate
+          python3 tools/package.py --stargate stargate --output "$RUNNER_TEMP/repeated"
+          diff -r dist "$RUNNER_TEMP/repeated"
+          python3 -m zipfile -e dist/deep-space-1.0.0.zip "$RUNNER_TEMP/extracted"
+          go -C stargate run ./src/cmd/themecheck "$RUNNER_TEMP/extracted"
+      - name: Install Chromium
+        run: |
+          python3 -m pip install playwright==1.61.0
+          python3 -m playwright install --with-deps chromium
+      - name: Verify authentication pages
+        run: python3 stargate/.github/browser/theme.py --theme "$GITHUB_WORKSPACE/themes/deep-space" --output "$RUNNER_TEMP/theme-evidence"
+      - name: Upload packages
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-themes
+          path: dist/
+          if-no-files-found: error
+      - name: Upload browser evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: theme-browser
+          path: |
+            ${{ runner.temp }}/theme-evidence/theme-results.json
+            ${{ runner.temp }}/theme-evidence/deep-space-login-desktop.png
+            ${{ runner.temp }}/theme-evidence/deep-space-login-mobile.png
+            ${{ runner.temp }}/theme-evidence/deep-space-account.png
+          if-no-files-found: warn
