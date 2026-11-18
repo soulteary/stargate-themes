@@ -1,0 +1,82 @@
+name: stargate-deep-space
+
+services:
+  traefik:
+    restart: unless-stopped
+    image: traefik:v3.7.12
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.http.address=:80
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - traefik
+
+  stargate:
+    restart: unless-stopped
+    image: ghcr.io/soulteary/stargate:1.8.0
+    environment:
+      - AUTH_HOST=${AUTH_HOSTNAME:-auth.test.localhost}
+      - PASSWORDS=plaintext:${STARGATE_PASSWORD:?Set STARGATE_PASSWORD in .env}
+      - CALLBACK_ALLOWED_HOSTS=${APP_HOSTNAME:-hello.test.localhost}
+      - SESSION_EXCHANGE_SECRET=${SESSION_EXCHANGE_SECRET:?Set SESSION_EXCHANGE_SECRET in .env}
+      - TRUSTED_PROXIES=172.30.0.0/24
+      - COOKIE_SECURE=false
+      - PORT=8080
+      - LANGUAGE=en
+      - THEME_DIR=/app/themes/deep-space
+      - THEME_SAFE_MODE=${THEME_SAFE_MODE:-false}
+    volumes:
+      - type: bind
+        source: ./themes/deep-space
+        target: /app/themes/deep-space
+        read_only: true
+        bind:
+          create_host_path: false
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://127.0.0.1:8080/healthz"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    networks:
+      - traefik
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=stargate-deep-space-traefik
+      - traefik.http.services.auth.loadbalancer.server.port=8080
+      - traefik.http.routers.auth.entrypoints=http
+      - traefik.http.routers.auth.rule=Host(`${AUTH_HOSTNAME:-auth.test.localhost}`) || Path(`/_session_exchange`)
+      - traefik.http.middlewares.stargate.forwardauth.address=http://stargate:8080/_auth
+      - "traefik.http.middlewares.stargate.forwardauth.authResponseHeaders=X-Forwarded-User,X-Auth-User,X-Auth-Email,X-Auth-Name,X-Auth-Scopes,X-Auth-Role,X-Auth-AMR"
+
+  hello:
+    restart: unless-stopped
+    image: ghcr.io/soulteary/hello:2.3.0
+    command: ["-listen", ":8080"]
+    networks:
+      - traefik
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=stargate-deep-space-traefik
+      - traefik.http.routers.hello.entrypoints=http
+      - traefik.http.routers.hello.rule=Host(`${APP_HOSTNAME:-hello.test.localhost}`)
+      - "traefik.http.routers.hello.middlewares=stargate"
+      - traefik.http.services.hello.loadbalancer.server.port=8080
+
+networks:
+  traefik:
+    name: stargate-deep-space-traefik
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24

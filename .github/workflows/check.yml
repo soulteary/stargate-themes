@@ -21,6 +21,11 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: Validate Compose example
+        env:
+          STARGATE_PASSWORD: compose-validation-only
+          SESSION_EXCHANGE_SECRET: compose-validation-only-secret-32-characters
+        run: docker compose -f examples/deep-space/compose.yml config --quiet
       - name: Check out the theme consumer
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

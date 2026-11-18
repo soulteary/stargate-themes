@@ -59,6 +59,10 @@ themes automatically. It reads an extracted directory, not a ZIP file. Install
 the same theme on every replica. Old pages may need reloading after an update,
 since each process serves only its current resource digest.
 
+For a complete local setup with Traefik and a protected service, see the
+[Deep Space Docker Compose example](examples/deep-space/README.md). It includes
+release downloads, checksum verification, installation and recovery steps.
+
 ## Validate and package
 
 Use a checkout of Stargate v1.8.0 or later:
