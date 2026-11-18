@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: soulteary/stargate
-          ref: c2f938e0a6139ccc37105df0712b55f26e90f7de
+          ref: c7cdbf2cbb0c516d596be40bb7c8b3ea43fb0b22 # Stargate v1.8.0
           path: stargate
           persist-credentials: false
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
