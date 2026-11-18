@@ -1,0 +1,27 @@
+contract: 1
+ui_contract: 1
+id: deep-space
+name: Deep Space
+version: "1.0.0"
+author: soulteary
+license: Apache-2.0
+layout: split
+tokens:
+  background: "#101419"
+  surface: "#161c22"
+  text: "#edf2f5"
+  muted: "#96a3af"
+  accent: "#8ed9e8"
+  accent-text: "#10232b"
+  border: "#43505c"
+  danger: "#f5a090"
+  focus: "#8ed9e8"
+  art: "#080e16"
+  art-text: "#f2f6fa"
+  radius: "6px"
+  font-scale: "1"
+brand:
+  image: deep-space.jpg
+  eyebrow: BEYOND THE ORDINARY
+  heading: Welcome to your universe.
+  caption: Your next frontier.
