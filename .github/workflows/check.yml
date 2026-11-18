@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: soulteary/stargate
-          ref: 0ecadc6a2637119ff2f72e79552442e2af9bf472
+          ref: c2f938e0a6139ccc37105df0712b55f26e90f7de
           path: stargate
           persist-credentials: false
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
@@ -61,7 +61,7 @@ jobs:
           name: theme-browser
           path: |
             ${{ runner.temp }}/theme-evidence/theme-results.json
-            ${{ runner.temp }}/theme-evidence/deep-space-login-desktop.png
-            ${{ runner.temp }}/theme-evidence/deep-space-login-mobile.png
-            ${{ runner.temp }}/theme-evidence/deep-space-account.png
+            ${{ runner.temp }}/theme-evidence/theme-login-desktop.png
+            ${{ runner.temp }}/theme-evidence/theme-login-mobile.png
+            ${{ runner.temp }}/theme-evidence/theme-account.png
           if-no-files-found: warn
