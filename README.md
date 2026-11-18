@@ -21,7 +21,7 @@ Reduced-motion preferences disable the background and entry animations.
 ## Install
 
 This theme requires [native theme support](https://github.com/soulteary/stargate/pull/387).
-CI uses Stargate commit `2cd41ca58e492b2acb5124a7464bb385a6d09dca`.
+CI uses Stargate commit `4a86331857b3b0d52bf061d5a7cd2d37faba292a`.
 It does not work with builds that only support external template overrides.
 Both the manifest and UI contract are version `1`.
 
