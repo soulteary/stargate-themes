@@ -33,11 +33,11 @@ jobs:
           ref: c7cdbf2cbb0c516d596be40bb7c8b3ea43fb0b22 # Stargate v1.8.0
           path: stargate
           persist-credentials: false
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+      - uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
         with:
           go-version-file: stargate/go.mod
           cache-dependency-path: stargate/go.sum
-      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: '3.12'
       - name: Validate and check reproducible packages
@@ -49,7 +49,7 @@ jobs:
           go -C stargate run ./src/cmd/themecheck "$RUNNER_TEMP/extracted"
       - name: Install Chromium
         run: |
-          python3 -m pip install playwright==1.61.0
+          python3 -m pip install playwright==1.65.2
           python3 -m playwright install --with-deps chromium
       - name: Verify authentication pages
         run: python3 stargate/.github/browser/theme.py --theme "$GITHUB_WORKSPACE/themes/deep-space" --output "$RUNNER_TEMP/theme-evidence"
