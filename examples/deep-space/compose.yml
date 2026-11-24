@@ -3,7 +3,7 @@ name: stargate-deep-space
 services:
   traefik:
     restart: unless-stopped
-    image: traefik:v3.7.12
+    image: traefik:v3.8.0
     command:
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
@@ -62,7 +62,7 @@ services:
 
   hello:
     restart: unless-stopped
-    image: ghcr.io/soulteary/hello:2.3.0
+    image: ghcr.io/soulteary/hello:2.3.3
     command: ["-listen", ":8080"]
     networks:
       - traefik
